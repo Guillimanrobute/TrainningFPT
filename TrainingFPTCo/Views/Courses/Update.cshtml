@@ -1,0 +1,66 @@
+﻿@model TrainingFPTCo.Models.CourseDetail
+
+@{
+    ViewData["Title"] = "Update Course";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="row">
+    <div class="col-sm-12 col-md-12">
+        <h3>Update Course</h3>
+        <a class="btn btn-primary" href="@Url.Action("Index", "Courses")">Back to List Courses</a>
+        <div class="card mt-5">
+            <div class="card-body">
+                <form enctype="multipart/form-data" method="post" asp-action="Update">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Name"></label>
+                                <input type="text" class="form-control" asp-for="Name" value="@Model.Name" />
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="CategoryId">Category</label>
+                                <select asp-for="CategoryId"
+                                        class="form-control"
+                                        asp-items="@(new SelectList(ViewBag.Categories, "Value", "Text", Model.CategoryId))"></select>
+                                <span asp-validation-for="CategoryId" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Description"></label>
+                                <textarea rows="5" asp-for="Description" class="form-control">@Model.Description</textarea>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group">
+                                <label>Start date</label>
+                                <input class="form-control" type="date" asp-for="StartDate" value="@Model.StartDate.ToString("yyyy-MM-dd")" />
+                                <span asp-validation-for="StartDate" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label>End date</label>
+                                <input class="form-control" type="date" asp-for="EndDate" value="@Model.EndDate?.ToString("yyyy-MM-dd")" />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Status"></label>
+                                <select asp-for="Status" class="form-control">
+                                    <option value="Active" selected="@Model.Status.Equals("Active")">Active</option>
+                                    <option value="Deactive" selected="@Model.Status.Equals("Deactive")">Deactive</option>
+                                </select>
+                                <span asp-validation-for="Status" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Image"></label>
+                                <input type="file" asp-for="Image" class="form-control" />
+                                <span asp-validation-for="Image" class="text-danger"></span>
+                                <br />
+                                <img width="50%" class="img-fluid" src="/uploads/images/@Model.ViewImageCouser" />
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

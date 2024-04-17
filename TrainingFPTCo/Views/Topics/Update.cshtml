@@ -1,0 +1,93 @@
+﻿@model TrainingFPTCo.Models.TopicDetail
+
+@{
+    ViewData["title"] = "Update Topic";
+    ViewData["breadcrumb"] = "Home";
+    ViewData["breadcrumb_active"] = "Update Topic";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<div class="row">
+    <div class="col-sm-12 col-md-12">
+        <h3> Update Topic Page!</h3>
+        <a class="btn btn-primary" href="@Url.Action("Index", "Topics")">Back to List Topics</a>
+        <div class="card mt-5">
+            <div class="card-header">
+                <h5>Update Topic</h5>
+            </div>
+            <div class="card-body">
+                <form enctype="multipart/form-data" asp-action="Update">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="control-label" asp-for="Name"></label>
+                                <input asp-for="Name" class="form-control" />
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                                @* id của topic *@
+                                <input type="hidden" asp-for="Id" />
+                            </div>
+                            <div class="form-group mb-3">
+                                <label asp-for="CourseId" class="control-label">Course</label>
+                                <select class="form-control" asp-for="CourseId" asp-items="@(new SelectList(ViewBag.Courses, "Value", "Text"))"></select>
+                                <span asp-validation-for="CourseId" class="text-danger"></span>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label asp-for="Description" class="control-label"></label>
+                                <textarea rows="5" class="form-control" asp-for="Description"></textarea>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label asp-for="AttachFiles">Attach File</label>
+                                <input type="file" class="form-control" asp-for="AttachFiles" />
+                                <span asp-validation-for="AttachFiles" class="text-danger"></span>
+                                <!-- Hiển thị dữ liệu có sẵn -->
+                                @if (!string.IsNullOrEmpty(Model.ViewAttachFiles))
+                                {
+                                    <a href="/uploads/images/@Model.ViewAttachFiles">@Model.ViewAttachFiles</a>
+                                }
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="Status" class="control-label">Status</label>
+                                <select class="form-control" asp-for="Status">
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                </select>
+                                <span asp-validation-for="Status" class="text-danger"></span>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label asp-for="Documents"></label>
+                                <input type="file" class="form-control" asp-for="Documents" />
+                                <span asp-validation-for="Documents" class="text-danger"></span>
+                                <!-- Hiển thị dữ liệu có sẵn -->
+                                @if (!string.IsNullOrEmpty(Model.ViewDocuments))
+                                {
+                                    <a href="/uploads/documents/@Model.ViewDocuments">@Model.ViewDocuments</a>
+                                }
+                            </div>
+                            <div class="form-group mb-3">
+                                <label asp-for="TypeDocument" class="control-label">Type Document</label>
+                                <select class="form-control" asp-for="TypeDocument">
+                                    <option value="video">Video</option>
+                                    <option value="ebook">E-Book</option>
+                                    <!-- Thêm các option khác nếu cần -->
+                                </select>
+                                <span asp-validation-for="TypeDocument" class="text-danger"></span>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label asp-for="PosterTopic"></label>
+                                <input type="file" class="form-control" asp-for="PosterTopic" />
+                                <span asp-validation-for="PosterTopic" class="text-danger"></span>
+                                <!-- Hiển thị dữ liệu có sẵn -->
+                                @if (!string.IsNullOrEmpty(Model.ViewPosterTopic))
+                                {
+                                    <img src="/uploads/documents/@Model.ViewPosterTopic" alt="Poster Topic" class="img-fluid" />
+                                }
+                            </div>
+                            <button class="my-3 btn btn-primary" type="submit">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

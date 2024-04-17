@@ -1,0 +1,158 @@
+﻿@model TrainingFPTCo.Models.TopicViewModel
+
+@{
+    ViewData["title"] = "Topics";
+    ViewData["breadcrumb"] = "Home";
+    ViewData["breadcrumb_active"] = "Topics";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+
+    bool saveStatus = Convert.ToBoolean(TempData["saveStatus"]);
+    // Lấy ra giây ở thời điểm hiện tại
+    var Timestamp = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds();
+
+    // Lấy danh sách các chủ đề từ Model
+    var topics = Model?.TopicDetailsList;
+}
+
+<div class="row">
+    <div class="col-sm-12 col-md-12">
+        <h3 class="text-center">This is Topics page!</h3>
+
+        <a class="btn btn-primary" href="@Url.Action("Add", "Topics")">Add new Topic</a>
+
+        @if (TempData["saveStatus"] != null)
+        {
+            @if (saveStatus)
+            {
+                <div class="text-success my-3">Add Successfully</div>
+            }
+            else
+            {
+                <div class="text-danger my-3">Add Failure</div>
+            }
+        }
+
+        <table class="table table-bordered table-striped mt-3">
+            <form method="get" action="@Url.Action("Index", "Topics")">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Search topics..." aria-label="Search topics" aria-describedby="basic-addon2" name="searchString">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="status">Status</label>
+                    </div>
+                    <select class="custom-select" id="status" name="status">
+                        <option value="">All</option>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="submit">Search</button>
+                    </div>
+                    <div class="input-group-append">
+                    <a asp-action="Index"> Back To list </a>
+                    </div>
+                </div>
+            </form>
+            <thead class="table-primary">
+                <tr>
+                    <th>Name</th>
+                    <th>Course</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Documents</th>
+                    <th>ViewAttachFiles</th> <!-- Thêm cột cho View Attach Files -->
+                    <th>Dowload</th>
+                    <th>PosterTopic</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (topics != null)
+                {
+                    @foreach (var item in topics)
+                    {
+                        <tr class="row-topic-@item.Id">
+                            <td>@item.Name</td>
+                            <td>@item.ViewCourseName</td>
+                            <td>@item.Description</td>
+                            <td>@item.Status</td>
+                            <td width="25%">
+                                @if (!string.IsNullOrEmpty(item.ViewDocuments))
+                                {
+                                    @if (item.ViewDocuments.EndsWith(".pdf"))
+                                    {
+                                        <embed src="/uploads/documents/@item.ViewDocuments" type="application/pdf" width="100%" height="300px" />
+                                    }
+                                    else if (item.ViewDocuments.EndsWith(".doc") || item.ViewDocuments.EndsWith(".docx"))
+                                    {
+                                        <iframe src="/uploads/documents/@item.ViewDocuments&embedded=true" style="width:100%; height:600px;" frameborder="0"></iframe>
+                                    }
+                                    else if (item.ViewDocuments.EndsWith(".mp3"))
+                                    {
+                                        <audio controls>
+                                            <source src="/uploads/documents/@item.ViewDocuments" type="audio/mp3">
+                                            Your browser does not support the audio element.
+                                        </audio>
+                                    }
+                                    else if (item.ViewDocuments.EndsWith(".mp4"))
+                                    {
+                                        <video width="320" height="240" controls>
+                                            <source src="/uploads/documents/@item.ViewDocuments" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    }
+                                }
+                            </td>
+                            <td width="10%">
+                                @if (!string.IsNullOrEmpty(item.ViewAttachFiles))
+                                {
+                                    @if (item.ViewAttachFiles.EndsWith(".pdf"))
+                                    {
+                                        <embed src="/uploads/images/@item.ViewAttachFiles" type="application/pdf" width="100%" height="200px" />
+                                    }
+                                    else if (item.ViewAttachFiles.EndsWith(".doc") || item.ViewAttachFiles.EndsWith(".docx"))
+                                    {
+                                        <iframe src="/uploads/images/@item.ViewAttachFiles&embedded=true" style="width:100%; height:300px;" frameborder="0"></iframe>
+                                    }
+                                }
+                            </td>
+
+                            <td width="10%">
+                                @if (!string.IsNullOrEmpty(item.ViewDocuments))
+                                {
+                                    <a href="/uploads/documents/@item.ViewDocuments" download="@item.ViewDocuments">Download Document</a>
+                                }
+                                @if (!string.IsNullOrEmpty(item.ViewAttachFiles))
+                                {
+                                    <a href="/uploads/images/@item.ViewAttachFiles" download="@item.ViewAttachFiles">Download Attach Files </a>
+                                }
+                            </td>
+
+
+                            <td width="10%">
+                                <img class="img-fluid" src="/uploads/documents/@item.ViewPosterTopic" alt="@item.Name" />
+                            </td>
+                            
+                            <td>
+                                <a class="btn btn-info btn-sm" href="@Url.Action("Update", "Topics", new { id = item.Id })">Edit</a>
+                                <a href="@Url.Action("Delete", "Topics", new {id = @item.Id})" class="btn btn-danger">Delete</a>
+
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="10">No topics found.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section javascripts
+{
+    <script src="/js/topic.js?v=@Timestamp"></script>
+}
